@@ -43,31 +43,27 @@ def exit(game_place):
      result = f'You have been slain by the troll! Game Over!'
      return result 
 
-def talk_to_hermit(game_place):
-    """_summary_
-        Hermit gives an amulet
-        ( inventory update add)
-    Args:
-        game_place (_type_): _description_
-    Returns:
-        _type_: _description_
-    """
-    inventory.collect_item("key")
-    return move(game_place)
-
 def talk_to_guard(game_place):
     """_summary_
         The guard gives the player a quest scroll
-        ( inventory update add)
-    Args:
-        game_place (_type_): _description_
-    Returns:
-        _type_: _description_
+        ( inventory update add)    
     """
     inventory.collect_item("quest_scroll")
     return move(game_place)
 
 def guard_check(game_place):
+    """
+    _summary_
+
+    Args:
+        Check Inventory.item.([quest_scroll])
+        Check Inventory.item.([troll_head])
+    game_place:
+            if quest_scroll is true, move to guard_2
+            elif troll_head is true, move to guard_3
+            else, move to guard
+
+    """
     result = ""
     if inventory.has_item('quest_scroll'):
             result = move([move, 'Guard_2'])
@@ -80,12 +76,8 @@ def guard_check(game_place):
 
 def talk_to_smithy(game_place):
     """_summary_
-        The smithy gives the player armour, a sword, and a tinder pouch for torch lighting
+        The smithy gives the player armour, and a sword
         ( inventory update add)
-    Args:
-        game_place (_type_): _description_
-    Returns:
-        _type_: _description_
     """
     inventory.collect_item("armour")
     inventory.collect_item("sword")
@@ -94,11 +86,7 @@ def talk_to_smithy(game_place):
 def talk_to_druid(game_place):
     """_summary_
         The druid gives the player a health potion and a torch kit
-        ( inventory update add)
-    Args:
-        game_place (_type_): _description_
-    Returns:
-        _type_: _description_
+        (inventory update add)
     """
     inventory.collect_item('potion'),
     #find out how to add two items in one instance
@@ -106,18 +94,21 @@ def talk_to_druid(game_place):
     return move(game_place)
 
 def troll_head(game_place):
-     inventory.collect_item('troll_head')
-     return move(game_place)
-
-def enter_castle(game_place):
-    result = ""
-    if inventory.has_item('key'):
-        result = move(game_place)
-    else:
-        result = "Visit the hermit to recieve a key to enter the castle.\n"+show_current_place()
-    return result
+    """_summary_
+        The player collects the troll head
+        (inventory update add)
+    """ 
+    inventory.collect_item('troll_head')
+    return move(game_place)
 
 def smithy_check(game_place):
+    """_summary_
+    Args:
+        Check if quest_scroll is in inventory:
+    game_place:
+        if true, move to smithy_2
+        if false, move to smithy_1
+    """
     result = ""
     if inventory.has_item('quest_scroll'):
             result = move([move, 'Smithy_2'])
@@ -126,6 +117,13 @@ def smithy_check(game_place):
     return result
 
 def druid_check(game_place):
+    """_summary_
+    Args:
+        Check if potion is in inventory:
+    game_place:
+        if true, move to druid_2
+        if false, move to druid_1
+    """
     result = ""
     if inventory.has_item('potion'):
             result = move([move, 'Druid_2'])
@@ -134,36 +132,39 @@ def druid_check(game_place):
     return result
 
 def combat_check(game_place):
-     result = ""
-     if game_places == 'Troll':
-            result = game_state.combat
+    """_summary_
+        Args:
+        Check if story is == to 'Troll'
+    game_place:
+        if true, move to combat parser
+        if false, move to explore
+    """
+    result = ""
+    if game_places == 'Troll':
+         result = game_state.combat
 
 def cave_check(game_place):
+    """_summary_
+       Args:
+        Check if torch is in inventory:
+    game_place:
+        if true, move to cave_lit
+        if false, move to cave_dark
+    """
     result = ""
     if inventory.has_item('torch'):
             result = move([move, 'Cave_Lit'])
     else:
         result = move([move, 'Cave_Dark'])
     return result
-def fight(game_place):
-    """
+"""
+_summary_
 
-    Args:
-        game_place (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
-    # Implement "fight"
-    # Check inventory for a sword - if no sword go to blacksmith
-    # If there is a sword then flip a random to decide if they win or lose
-    # If they lose they lose health
-    #    They die when health is zero. When they die,  empty inventory, game_state = Forest
-    # If they win they can move into the Castle ...
-    result = "You can not fight because you don\'t have a sword.\nGet a sword from the blacksmith\'s.\nFighting has not been implemented\n Can you implement it?"+show_current_place()
-
-    return result
-
+Define game states and game places at list of dictionaries
+Start player in Forest. 
+Define each game_place with story, valid commands, and images
+Run checks for inventory conditions to update some game_place.
+"""
 game_state = 'Forest'
 game_places = {'Forest': {'Story': 'You are Agnmauða, an aspiring warrior.\nTo the south is the village caslte. To the North is the druid.\nTo the east is the blacksmith, and to the west is the cave.',
                           'North': (move, 'Druid_Hut'), 'South': (move, 'Castle'), 'West': (move, 'Cave'), 'East': (move, 'Blacksmith'), 'Image': 'images/forest.png'},
@@ -242,15 +243,15 @@ def game_play(command_input):
     """     
 
     if not valid_tokens:
-        story_result = 'Can not understand that sorry\n'+show_current_place()
+        story_result = 'Can not understand that sorry\n'+show_current_place() # Handle invalid input
     else:
         for atoken in valid_tokens:
             game_place = game_places[game_state]
-            the_place = atoken.capitalize()
+            the_place = atoken.capitalize() 
             if the_place in game_place:
                 place = game_place[the_place]
                 story_result = place[0](place)  # Run the action
-                print("game_place:", game_place, '\n', "game_state", game_state, '\n', "the_place", the_place, '\n', "story_result",  story_result)
+                print("game_place:", game_place, '\n', "game_state", game_state, '\n', "the_place", the_place, '\n', "story_result",  story_result) #print game_place, game_state, the_place, story_result to terminal
             else:
-                story_result = f"Can't {the_place} here\n"+show_current_place()
+                story_result = f"Can't {the_place} here\n"+show_current_place() #Handle illegal input
     return story_result
