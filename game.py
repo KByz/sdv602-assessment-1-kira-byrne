@@ -27,33 +27,30 @@ def make_a_window():
 
 
 if __name__ == "__main__":
-    # testing for now - these should be part of a test suite
-    # print(show_current_place())
-    # current_story = game_play('Forest')
-    # print(show_current_place())
+    #define various gamestates to be called in the window loop
+    #define window loop for main gameplay
 
-    # A persisent window - stays until "Exit" is pressed
     window = make_a_window()
-    game_state = 'explore' 
-    game_state = 'combat'
-    game_state = 'game_over'
+    game_state = 'explore' #set explore state in story more
+    game_state = 'combat' #set combat state when player encounters troll
+    game_state = 'game_over' #set game over state when player dies or finishes the game
 
     while True:
-        event, values = window.read()
-        print(event)
+        event, values = window.read() #values of event are read and printed in the window
+        print(event) 
         if event == 'Enter':
-            current_story = cm.game_play(values['-IN-'].lower())
+            current_story = cm.game_play(values['-IN-'].lower()) #checks for lower case letters in valid tokens
 
 
-            window['-OUTPUT-'].update(current_story)
-            window['-IN-'].update("")
+            window['-OUTPUT-'].update(current_story) #updates the output window with the current story
+            window['-IN-'].update("") #removes input when enter is pressed
             window['-IMG-'].update(cm.game_places[cm.game_state]
-                                   ['Image'], size=(100, 100))
+                                   ['Image'], size=(100, 100)) #set consistent image size
 
             pass
-        elif event == 'Exit' or event is None or event == sg.WIN_CLOSED:
+        elif event == 'Exit' or event is None or event == sg.WIN_CLOSED: # A persisent window - stays until "Exit" is pressed
             break
         else:
             pass
 
-    window.close()
+    window.close() #close window on exit

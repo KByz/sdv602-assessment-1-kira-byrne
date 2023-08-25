@@ -179,11 +179,11 @@ game_places = {'Forest': {'Story': 'You are Agnmauða, an aspiring warrior.\nTo 
                               'Look': (move, 'Troll'), 'Image': 'images/frog.png'},
                 'Troll': {'Story': 'Stepping forth from the darkness, your torch illuminates the form of a \nsnarling cave troll. The towering creature lets forth an earth-shattering \nhowl, bashing the ground with clawed fists. \nIt is time to make your stand.',
                           'Fight': (move, 'Troll_Fight'), 'Image': 'images/frog.png'},
-                'Troll_Fight': {'Story': 'You strike the troll with a might blow, but the troll strikes back with vicious claws.',
+                'Troll_Fight': {'Story': 'The troll strikes at you with vicious claws. Attack or health with your potion.',
                                 'Attack': (combat, 'attack'), 'Potion': (combat, 'potion'), 'Image': 'images/frog.png'},
                 'Troll_Dead': {'Story': 'The troll drops to floor, lifeless and bloody.',
                                'Look': (move, 'Troll_Body'), 'Leave': (move, 'Cave'), 'Image': 'images/frog.png'},
-                'Troll_Body': {'Story': 'You gaze over the troll before reching down to take your trophy. \n The head of the troll does not come off easy \nbut you manage to take it with you.',
+                'Troll_Body': {'Story': 'You gaze over the troll before reching down to take your trophy. \nThe head of the troll does not come off easy \nbut you manage to take it with you.',
                                'Leave':(troll_head, 'Cave'), 'Image': 'images/frog.png'},
                'Castle': {'Story': 'You are at the castle.\nYou see a guard patroling the upper parapet.\nTo the north is forest.',
                           'North': (move, 'Forest'), 'Talk': (guard_check, 'Guard'), 'Image': 'images/frog.png'},
@@ -216,8 +216,7 @@ def show_current_place():
     Returns:
         string: the story at the current place
     """
-    global game_state
-    health.reduce(10)  # Lose health as you move
+    global game_state # Lose health as you move
     return f"[Health={health.get()}]\n"+game_places[game_state]['Story']
 
  
