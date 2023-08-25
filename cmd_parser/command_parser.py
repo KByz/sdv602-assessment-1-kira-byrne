@@ -56,19 +56,15 @@ def guard_check(game_place):
     _summary_
 
     Args:
-        Check Inventory.item.([quest_scroll])
         Check Inventory.item.([troll_head])
     game_place:
-            if quest_scroll is true, move to guard_2
             elif troll_head is true, move to guard_3
             else, move to guard
 
     """
     result = ""
-    if inventory.has_item('quest_scroll'):
+    if inventory.has_item('troll_head'):
             result = move([move, 'Guard_2'])
-    elif inventory.has_item('troll_head'):
-            result = move([move, 'Guard_3'])
     else:
         result = move([move, 'Guard'])
     return result
@@ -190,9 +186,7 @@ game_places = {'Forest': {'Story': 'You are Agnmauða, an aspiring warrior.\nTo 
                           'North': (move, 'Forest'), 'Talk': (guard_check, 'Guard'), 'Image': 'images/frog.png'},
                 'Guard': {'Story': 'The guard looks down at you, \n"Another aspiring warrior come to test their luck, eh? \nWell, lets see... There has been reports of strange noises \ncoming from the western cave. I task you with investigating it. \nGo see the blacksmith to the east for armaments. \nIt may pay to visit the druid in the north as well."',
                           'Leave': (talk_to_guard, 'Castle'), 'Image': 'images/frog.png'},
-                'Guard_2': {'Story': 'The guard looks you over with a furrowed brow. \n"Get investigating!"',
-                            'Leave': (move, 'Castle'), 'Image': 'images/frog.png'},
-                'Guard_3': {'Story': 'As you approach the guard, he looks down to see a trail of blood dripping from your bag. \n "By Thor\'s beard, you\'ve done it! \nBy my honour as Thane, I name you Trollbane. \nTake your place in the meadhall and tell your tale."',
+                'Guard_2': {'Story': 'As you approach the guard, he looks down to see a trail of blood dripping from your bag. \n "By Thor\'s beard, you\'ve done it! \nBy my honour as Thane, I name you Trollbane. \nTake your place in the meadhall and tell your tale."',
                             'Enter': (move, 'Game_Over'), 'Image': 'images/forest_circle.png'},
                 'Blacksmith': {'Story': 'You see the workshop of the Blacksmith.\nThe booming sound of a hammer striking the anvil echos through the surrounding forest.',
                              'West': (move, 'Forest'), 'Enter': (smithy_check, 'Smithy_1'), 'Image': 'images/forest.png'},
