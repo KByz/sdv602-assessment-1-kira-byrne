@@ -6,7 +6,8 @@ Manages the commands - may not be the best name at this time
 import cmd_parser.token as token
 import inventory.items as inventory
 import status.health as health
-import combat.combat_sys as combat
+#import combat.combat_sys as combat
+from combat.combat_sys import combat
 
 # Game commands
 
@@ -20,18 +21,27 @@ def move(game_place):
     Returns:
         _type_: _description_
     """
-    global game_location
+    global game_state
     global game_state
 
     location = game_place[1]
-    if location == "Troll":
-        game_state = "combat"
-    game_location = location
+    if location == 'Troll':
+        game_state = 'combat'
+    game_state = location
 
     story_result = show_current_place()
 
     return story_result
 
+def exit(game_place):
+     """
+     _summary_
+
+     result returns the game is over message
+
+     """
+     result = f'You have been slain by the troll! Game Over!'
+     return result 
 
 def talk_to_hermit(game_place):
     """_summary_
@@ -148,15 +158,14 @@ def fight(game_place):
     # Check inventory for a sword - if no sword go to blacksmith
     # If there is a sword then flip a random to decide if they win or lose
     # If they lose they lose health
-    #    They die when health is zero. When they die,  empty inventory, game_location = Forest
+    #    They die when health is zero. When they die,  empty inventory, game_state = Forest
     # If they win they can move into the Castle ...
     result = "You can not fight because you don\'t have a sword.\nGet a sword from the blacksmith\'s.\nFighting has not been implemented\n Can you implement it?"+show_current_place()
 
     return result
 
-game_state = 'explore'
-game_location = 'Forest'
-game_places = {'Forest': {'Story': 'You are Agnmauða, an aspiring warrior.\nTo the south is the village caslte.\n',
+game_state = 'Forest'
+game_places = {'Forest': {'Story': 'You are Agnmauða, an aspiring warrior.\nTo the south is the village caslte. To the North is the druid.\nTo the east is the blacksmith, and to the west is the cave.',
                           'North': (move, 'Druid_Hut'), 'South': (move, 'Castle'), 'West': (move, 'Cave'), 'East': (move, 'Blacksmith'), 'Image': 'images/forest.png'},
                'Cave': {'Story': 'You are at the cave.\nA low and foreboding howl \nblows through the entrance. \nTo the east is forest.',
                         'East':(move, 'Forest'), 'Enter': (cave_check,'Cave_Dark'), 'Image':'images/forest_circle.png'},
@@ -193,23 +202,24 @@ game_places = {'Forest': {'Story': 'You are Agnmauða, an aspiring warrior.\nTo 
                         'South': (move,'Forest'), 'Enter':(move, 'Druid'), 'Image': 'images/frog.png'},
                 'Druid': {'Story': 'The hut is warm and full of magical energy. An old, beared druid rests by the fire.',
                             'Talk': (druid_check, 'Druid_1'), 'Leave':(move, 'Druid_Hut'), 'Image': 'images/forest_circle.png'},
-                'Druid_1': {'Story': 'The druid gazes into the fire, smoking a long warden pipe. \n"Blood is on the air this night and devils play is at hand..." \nHe says lowly. "It is dangerous to go alone, take this." \nHe hands you a faintly glowing bottle \nfilled with a vitalising red liquid.',
+                'Druid_1': {'Story': 'The druid gazes into the fire, smoking a long warden pipe. \n"Blood is on the air this night and devils play is at hand..." \nHe says lowly. "It is dangerous to go alone, take this." \nHe hands you a faintly glowing bottle filled with a vitalising red liquid \nand a tinder pouch for making a torch.',
                             'Leave': (talk_to_druid, 'Druid_Hut'), 'Image': 'images/frog.png'},
                 'Druid_2': {'Story': 'The druid is resting soundly a sleep by the fire. \nThe roar of a dragon could not wake him.',
-                            'Leave': (move, 'Druid_Hut'), 'Image': 'images/frog.png'}
+                            'Leave': (move, 'Druid_Hut'), 'Image': 'images/frog.png'},
+                'Game_Over': {'Story': 'Game Over!', 'Exit': (exit, 'Exit' ), 'Image': 'images/frog.png'}
                }
 
 def show_current_place():
-    """Gets the story at the game_location place
+    """Gets the story at the game_state place
 
     Returns:
         string: the story at the current place
     """
-    global game_location
+    global game_state
     health.reduce(10)  # Lose health as you move
-    return f"[Health={health.get()}]\n"+game_places[game_location]['Story']
+    return f"[Health={health.get()}]\n"+game_places[game_state]['Story']
 
-
+ 
 def game_play(command_input):
     """
     Runs the game_play
@@ -219,13 +229,11 @@ def game_play(command_input):
     Returns:
         string: the story at the current place, after an action
     """
-    global game_location
+    global game_state
     #split game states to check valid token vocab
     story_result = '' 
     valid_tokens = token.valid_list(command_input)
-    if 'attack' in valid_tokens or 'potion' in valid_tokens:
-     return combat.combat_sys.py
-
+    print('COMMAND_INPUT' + command_input)
     """
     if game_place == 'Troll':
         return (game_state.combat)
@@ -237,12 +245,12 @@ def game_play(command_input):
         story_result = 'Can not understand that sorry\n'+show_current_place()
     else:
         for atoken in valid_tokens:
-            game_place = game_places[game_location]
+            game_place = game_places[game_state]
             the_place = atoken.capitalize()
             if the_place in game_place:
                 place = game_place[the_place]
                 story_result = place[0](place)  # Run the action
-                print("game_place:", game_place, '\n', "game_location", game_location, '\n', "the_place", the_place, '\n', "story_result",  story_result)
+                print("game_place:", game_place, '\n', "game_state", game_state, '\n', "the_place", the_place, '\n', "story_result",  story_result)
             else:
                 story_result = f"Can't {the_place} here\n"+show_current_place()
     return story_result

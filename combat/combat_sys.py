@@ -5,7 +5,7 @@ Define troll health & attack
 import types
 import cmd_parser.command_parser as cmd
 
-def troll():
+def troll(): #WIP
     global _troll_health
     global _troll_attack
 
@@ -23,9 +23,7 @@ def reduce(pValue):
 """
 Define player health & attack 
 """
-
-    
-_player_health: int = 810
+_player_health: int = 410
 _player_attack: int = 25
 
 def get():
@@ -49,32 +47,36 @@ def sword(pValue):
 Define combat system
 """
 
-def combat(pCommand):
+def combat(pPlace):
     global _player_health
     global _player_attack
     global _troll_health
     global _troll_attack
+
+    result = ""
+    pCommand = pPlace[1]
+    print(pPlace, 'INSIDE COMBAT')
     if pCommand == 'attack':
         _troll_health -= _player_attack
         _player_health -= _troll_attack
-        if _troll_health <= 0:
-            cmd.move(['Troll_Dead'])
-            cmd.game_state = 'explore'
+        if _troll_health <= 0: #Check for troll's health, when less than or euqal to 0, move to next stage in game
+            result = cmd.move([cmd.move, 'Troll_Dead'])
         elif _player_health <= 0:
-            cmd.game_state = 'game_over'
-            return 'You have been slain by the troll!'
+            #cmd.game_state = 'game_over' #check for player health, if less than or equal to 0, return 'game over'
+            result = cmd.move([cmd.move, 'Game_Over'])
         else:
-            return 'You strike the troll with a mighty blow, but she strikes back with vicious claws.'
+            result = 'You attacked the troll\n' + cmd.move([cmd.move, 'Troll_Fight'])
     elif pCommand == 'potion':
         _player_health += 500
         _player_health -= _troll_attack
         if _player_health <= 0:
-            cmd.game_state = 'game_over'
-            return 'You have been slain by the troll! Game Over!'
+            result = 'You have been slain by the troll! Game Over!' + cmd.move([cmd.move, 'Game_Over'])
         else:
-            return 'You have restored your health!'
+            result = 'You have restored your health!' + cmd.move([cmd.move, 'Troll_Fight'])
     else:
-        return 'You cannot do that here.'
+        result = 'You cannot do that here.' + cmd.move([cmd.move, 'Troll_Fight'])
+
+    return result
  #IF attack, troll health - player attack
 #check if troll health = <0, if yes, set game location to "dead_troll", set game state back to explore.
     # set game state to explore, call cmd.move([cmd.move, 'Troll_Dead'])

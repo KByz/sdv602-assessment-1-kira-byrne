@@ -19,7 +19,7 @@ Define player health & attack
 """
 
     
-_player_health: int = 500
+_player_health: int = 510
 _player_attack: int = 25
 
 def get():

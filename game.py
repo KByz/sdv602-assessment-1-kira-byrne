@@ -29,11 +29,14 @@ def make_a_window():
 if __name__ == "__main__":
     # testing for now - these should be part of a test suite
     # print(show_current_place())
-    # current_story = game_play('North')
+    # current_story = game_play('Forest')
     # print(show_current_place())
 
     # A persisent window - stays until "Exit" is pressed
     window = make_a_window()
+    game_state = 'explore' 
+    game_state = 'combat'
+    game_state = 'game_over'
 
     while True:
         event, values = window.read()
@@ -41,9 +44,10 @@ if __name__ == "__main__":
         if event == 'Enter':
             current_story = cm.game_play(values['-IN-'].lower())
 
-            window['-OUTPUT-'].update(current_story)
 
-            window['-IMG-'].update(cm.game_places[cm.game_location]
+            window['-OUTPUT-'].update(current_story)
+            window['-IN-'].update("")
+            window['-IMG-'].update(cm.game_places[cm.game_state]
                                    ['Image'], size=(100, 100))
 
             pass
