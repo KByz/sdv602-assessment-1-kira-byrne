@@ -1,10 +1,9 @@
 """
 Define troll health & attack 
 """
-
 import types
-_troll_health: int = 500
-_troll_attack: int = 25
+_troll_health: int = 300
+_troll_attack: int = 50
 
 def get():
     return _troll_health
@@ -19,7 +18,7 @@ Define player health & attack
 """
 
     
-_player_health: int = 510
+_player_health: int = 610
 _player_attack: int = 25
 
 def get():
@@ -34,7 +33,3 @@ def reduce(pValue):
 def increase(pValue):
     global _player_health
     _player_health += pValue
-
-def sword(pValue):
-    global _player_attack
-    _player_attack += pValue
